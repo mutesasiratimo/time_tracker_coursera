@@ -69,18 +69,32 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(color: Colors.white),
           ),
           bottom: const TabBar(
-            indicatorColor: Colors.white,
+            indicatorColor: Colors.amber,
             labelColor: Colors.white,
             unselectedLabelColor: Colors.grey,
             tabs: [Tab(text: 'All Entries'), Tab(text: 'Grouped by Projects')],
           ),
-          backgroundColor: Colors.blue.shade900,
+          backgroundColor: Color(0xff2e9589),
         ),
         drawer: Drawer(
           child: ListView(
             children: [
-              const DrawerHeader(child: Text('Menu')),
+              DrawerHeader(
+                decoration: BoxDecoration(color: Color(0xff2e9589)),
+                padding: EdgeInsets.symmetric(vertical: 0.0),
+                child: Center(
+                  child: Text(
+                    'Menu',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
               ListTile(
+                leading: Icon(Icons.folder),
                 title: const Text('Projects'),
                 onTap: () {
                   Navigator.push(
@@ -92,6 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
               ListTile(
+                leading: Icon(Icons.list),
                 title: const Text('Tasks'),
                 onTap: () {
                   Navigator.push(
@@ -121,10 +136,34 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         // First Tab: All Entries
                         entries.isEmpty
-                            ? const Center(
-                              child: Text(
-                                'No time entries yet!\nTap the + button to add your first entry.',
-                                textAlign: TextAlign.center,
+                            ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.hourglass_empty_outlined,
+                                    size: 60,
+                                    color: Colors.grey,
+                                  ),
+                                  Text(
+                                    'No time entries yet!',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.grey.shade700,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Tap the + button to add your first entry.',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
                               ),
                             )
                             : RefreshIndicator(
@@ -134,29 +173,60 @@ class _HomeScreenState extends State<HomeScreen> {
                                 itemBuilder: (context, index) {
                                   final entry = entries[index];
                                   return FutureBuilder(
-                                    future: projectProvider.getTaskName(
-                                      entry.taskId,
-                                    ),
-                                    builder: (context, taskSnapshot) {
-                                      return ListTile(
-                                        title: Text(entry.notes ?? 'No notes'),
-                                        subtitle: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Task: ${taskSnapshot.data ?? 'Unknown Task'}',
+                                    // future: projectProvider.getTaskName(
+                                    //   entry.taskId,
+                                    // ),
+                                    future: Future.wait([
+                                      projectProvider.getProjectName(
+                                        entry.projectId,
+                                      ),
+                                      projectProvider.getTaskName(entry.taskId),
+                                    ]),
+                                    builder: (context, snapshot) {
+                                      final projectName =
+                                          snapshot.data?[0] ??
+                                          'Unknown Project';
+                                      final taskName =
+                                          snapshot.data?[1] ?? 'Unknown Task';
+                                      return Card(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: ListTile(
+                                            title: Text(
+                                              '$projectName - $taskName',
+                                              style: TextStyle(
+                                                color: Colors.teal,
+                                                // fontSize: 18,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
-                                            Text(
-                                              '${entry.hours} hours on ${entry.date.toLocal().toString().split(' ')[0]}',
+                                            subtitle: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Total Time: ${entry.hours} hours',
+                                                ),
+                                                Text(
+                                                  'Date: ${entry.date.toLocal().toString().split(' ')[0]}',
+                                                ),
+                                                Text(
+                                                  'Note: ${entry.notes ?? 'No notes'}',
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                        trailing: IconButton(
-                                          icon: const Icon(Icons.delete),
-                                          onPressed: () {
-                                            timeProvider.deleteEntry(entry.id);
-                                          },
+                                            trailing: IconButton(
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
+                                              ),
+                                              onPressed: () {
+                                                timeProvider.deleteEntry(
+                                                  entry.id,
+                                                );
+                                              },
+                                            ),
+                                          ),
                                         ),
                                       );
                                     },
@@ -166,26 +236,40 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                         // Second Tab: Grouped by Projects
                         projectEntries.isEmpty
-                            ? const Center(
-                              child: Text(
-                                'No time entries yet!\nTap the + button to add your first entry.',
-                                textAlign: TextAlign.center,
+                            ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.hourglass_empty_outlined,
+                                    size: 60,
+                                    color: Colors.grey,
+                                  ),
+                                  Text(
+                                    'No time entries yet!',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.grey.shade700,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Tap the + button to add your first entry.',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
                               ),
                             )
                             : RefreshIndicator(
                               onRefresh: _loadData,
                               child: ListView(
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Text(
-                                      'Grouped by Projects',
-                                      style:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.headlineSmall,
-                                    ),
-                                  ),
                                   ...projectEntries.entries.map((entry) {
                                     final projectId = entry.key;
                                     final project = projects.firstWhere(
@@ -197,10 +281,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                             createdAt: DateTime.now(),
                                           ),
                                     );
-                                    final projectHours = entry.value.fold(
-                                      0.0,
-                                      (sum, e) => sum + e.hours,
-                                    );
+                                    // final projectHours = entry.value.fold(
+                                    //   0.0,
+                                    //   (sum, e) => sum + e.hours,
+                                    // );
 
                                     return Card(
                                       margin: const EdgeInsets.symmetric(
@@ -225,13 +309,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 project.name,
                                                 style: const TextStyle(
                                                   fontWeight: FontWeight.bold,
+                                                  color: Colors.teal,
                                                 ),
-                                              ),
-                                            ),
-                                            Text(
-                                              '${projectHours.toStringAsFixed(1)}h',
-                                              style: const TextStyle(
-                                                color: Colors.blue,
                                               ),
                                             ),
                                           ],
@@ -247,35 +326,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   context,
                                                   taskSnapshot,
                                                 ) {
-                                                  return ListTile(
-                                                    title: Text(
-                                                      timeEntry.notes ??
-                                                          'No notes',
-                                                    ),
-                                                    subtitle: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          'Task: ${taskSnapshot.data ?? 'Unknown Task'}',
-                                                        ),
-                                                        Text(
-                                                          '${timeEntry.hours} hours on ${timeEntry.date.toLocal().toString().split(' ')[0]}',
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    trailing: IconButton(
-                                                      icon: const Icon(
-                                                        Icons.delete,
+                                                  return Row(
+                                                    children: [
+                                                      Text(
+                                                        '- ${taskSnapshot.data ?? 'Unknown Task'}: ${timeEntry.hours} hours (${timeEntry.date.toLocal().toString().split(' ')[0]})',
                                                       ),
-                                                      onPressed: () {
-                                                        timeProvider
-                                                            .deleteEntry(
-                                                              timeEntry.id,
-                                                            );
-                                                      },
-                                                    ),
+                                                    ],
                                                   );
                                                 },
                                               );
@@ -291,6 +347,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
         floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.amber,
+          foregroundColor: Colors.white,
           onPressed: () {
             Navigator.push(
               context,

@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/project_task_provider.dart';
@@ -16,37 +18,41 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('Manage Tasks'),
+        backgroundColor: Color(0xff6a59b6),
+        foregroundColor: Colors.white,
+
         actions: [
-          Consumer<ProjectTaskProvider>(
-            builder: (context, provider, _) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: DropdownButton<String>(
-                  value: _selectedProjectId,
-                  hint: const Text('Filter'),
-                  underline: const SizedBox(),
-                  items: [
-                    const DropdownMenuItem(
-                      value: null,
-                      child: Text('All Projects'),
-                    ),
-                    ...provider.projects.map((project) {
-                      return DropdownMenuItem(
-                        value: project.id,
-                        child: Text(project.name),
-                      );
-                    }).toList(),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedProjectId = value;
-                    });
-                  },
-                ),
-              );
-            },
-          ),
+          // Consumer<ProjectTaskProvider>(
+          //   builder: (context, provider, _) {
+          //     return Padding(
+          //       padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          //       child: DropdownButton<String>(
+          //         value: _selectedProjectId,
+          //         hint: const Text('Filter'),
+          //         underline: const SizedBox(),
+          //         items: [
+          //           const DropdownMenuItem(
+          //             value: null,
+          //             child: Text('All Projects'),
+          //           ),
+          //           ...provider.projects.map((project) {
+          //             return DropdownMenuItem(
+          //               value: project.id,
+          //               child: Text(project.name),
+          //             );
+          //           }).toList(),
+          //         ],
+          //         onChanged: (value) {
+          //           setState(() {
+          //             _selectedProjectId = value;
+          //           });
+          //         },
+          //       ),
+          //     );
+          //   },
+          // ),
         ],
       ),
       body: Consumer<ProjectTaskProvider>(
@@ -80,7 +86,7 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
                     margin: const EdgeInsets.only(bottom: 8),
                     child: ListTile(
                       title: Text(task.name),
-                      subtitle: Text(snapshot.data ?? 'No project'),
+                      // subtitle: Text(snapshot.data ?? 'No project'),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
                         onPressed: () => _deleteTask(context, task.id),
@@ -94,6 +100,8 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.amber,
+        foregroundColor: Colors.white,
         onPressed: () => _showAddTaskDialog(context),
         child: const Icon(Icons.add),
       ),
@@ -112,34 +120,34 @@ class _TaskManagementScreenState extends State<TaskManagementScreen> {
             return StatefulBuilder(
               builder: (context, setState) {
                 return AlertDialog(
-                  title: const Text('Add New Task'),
+                  title: const Text('Add Task'),
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      DropdownButtonFormField<String>(
-                        value: selectedProjectId,
-                        decoration: const InputDecoration(
-                          labelText: 'Project',
-                          border: OutlineInputBorder(),
-                        ),
-                        items:
-                            provider.projects.map((project) {
-                              return DropdownMenuItem(
-                                value: project.id,
-                                child: Text(project.name),
-                              );
-                            }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedProjectId = value;
-                          });
-                        },
-                        validator:
-                            (value) =>
-                                value == null
-                                    ? 'Please select a project'
-                                    : null,
-                      ),
+                      // DropdownButtonFormField<String>(
+                      //   value: selectedProjectId,
+                      //   decoration: const InputDecoration(
+                      //     labelText: 'Project',
+                      //     border: OutlineInputBorder(),
+                      //   ),
+                      //   items:
+                      //       provider.projects.map((project) {
+                      //         return DropdownMenuItem(
+                      //           value: project.id,
+                      //           child: Text(project.name),
+                      //         );
+                      //       }).toList(),
+                      //   onChanged: (value) {
+                      //     setState(() {
+                      //       selectedProjectId = value;
+                      //     });
+                      //   },
+                      //   validator:
+                      //       (value) =>
+                      //           value == null
+                      //               ? 'Please select a project'
+                      //               : null,
+                      // ),
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: taskNameController,

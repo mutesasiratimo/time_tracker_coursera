@@ -30,7 +30,14 @@ class _AddTimeEntryScreenState extends State<AddTimeEntryScreen> {
             : [];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Time Entry')),
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+          'Add Time Entry',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Color(0xff2e9589),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -111,15 +118,18 @@ class _AddTimeEntryScreenState extends State<AddTimeEntryScreen> {
               ),
               const SizedBox(height: 24),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Cancel'),
-                  ),
+                  // ElevatedButton(
+                  //   onPressed: () => Navigator.pop(context),
+                  //   child: const Text('Cancel'),
+                  // ),
                   ElevatedButton(
                     onPressed: _saveEntry,
-                    child: const Text('Save'),
+                    child: const Text(
+                      'Save Entry',
+                      style: TextStyle(color: Colors.teal),
+                    ),
                   ),
                 ],
               ),

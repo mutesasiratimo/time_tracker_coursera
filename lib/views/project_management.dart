@@ -18,7 +18,12 @@ class _ProjectManagementState extends State<ProjectManagement> {
     final projects = projectProvider.projects;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Manage Projects')),
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text('Manage Projects'),
+        backgroundColor: Color(0xff6a59b6),
+        foregroundColor: Colors.white,
+      ),
       body:
           projects.isEmpty
               ? const Center(child: Text('No projects yet. Tap + to add one.'))
@@ -48,6 +53,8 @@ class _ProjectManagementState extends State<ProjectManagement> {
                 ),
               ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.amber,
+        foregroundColor: Colors.white,
         onPressed: () => _showAddProjectDialog(context),
         child: const Icon(Icons.add),
       ),
@@ -65,7 +72,7 @@ class _ProjectManagementState extends State<ProjectManagement> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Add New Project'),
+          title: const Text('Add Project'),
           content: TextField(
             controller: projectNameController,
             autofocus: true,

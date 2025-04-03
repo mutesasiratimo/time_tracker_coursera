@@ -76,7 +76,8 @@ class ProjectTaskProvider with ChangeNotifier {
 
   List<Task> getTasksByProject(String projectId) {
     if (!_isInitialized || _tasks == null) return [];
-    return _tasks!.values.where((task) => task.projectId == projectId).toList();
+    return _tasks!.values.where((task) => task.projectId != '').toList();
+    // return _tasks!.values.where((task) => task.projectId == projectId).toList();
   }
 
   Future<void> addTask(String projectId, String name) async {
